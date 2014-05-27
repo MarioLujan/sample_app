@@ -74,13 +74,6 @@ describe "User pages" do
     it { should have_title(full_title('Sign up')) }
   end
 
-  describe "signup page" do
-    before { visit signup_path }
-
-    it { should have_content('Sign up') }
-    it { should have_title(full_title('Sign up')) }
-  end
-
   describe "signup" do
 
     before { visit signup_path }
@@ -108,6 +101,10 @@ describe "User pages" do
         fill_in "Confirmation", with: "foobar"
       end
 
+      it "should create a user" do
+        expect { click_button submit }.to change(User, :count).by(1)
+      end
+
       describe "after saving the user" do
         before { click_button submit }
         let(:user) { User.find_by(email: 'user@example.com') }
@@ -115,10 +112,6 @@ describe "User pages" do
         it { should have_link('Sign out') }
         it { should have_title(user.name) }
         it { should have_selector('div.alert.alert-success', text: 'Welcome') }
-      end
-
-      it "should create a user" do
-        expect { click_button submit }.to change(User, :count).by(1)
       end
     end
   end
@@ -129,7 +122,6 @@ describe "User pages" do
       sign_in user
       visit edit_user_path(user)
     end
-
     describe "page" do
       it { should have_content("Update your profile") }
       it { should have_title("Edit user") }
